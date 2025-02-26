@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 	"bufio"
-	"strings"
+	"strings"	
 )
 
 
-func copyFile(src, dst string, wg *sync.WaitGroup)  {
+func copyFile(src, dst string, wg *sync.WaitGroup, errChan chan error)  {
 	
 	defer wg.Done()
 	
@@ -20,6 +20,7 @@ func copyFile(src, dst string, wg *sync.WaitGroup)  {
 	srcFile, err := os.Open(src)
 
 	if err != nil {
+		errChan <- fmt.Errorf("error opening source file %s: %v", src, err)
 		return 
 	}
 
@@ -29,6 +30,7 @@ func copyFile(src, dst string, wg *sync.WaitGroup)  {
 	dstFile, err := os.Create(dst)
 
 	if err != nil {
+		errChan <- fmt.Errorf("error creating destination file %s: %v", dst, err)
 		return 
 	}
 
@@ -38,6 +40,7 @@ func copyFile(src, dst string, wg *sync.WaitGroup)  {
 	_, err = io.Copy(dstFile, srcFile)
 
 	if err != nil {
+		errChan <- fmt.Errorf("error copying file %s: %v", src, err)
 		return 
 	}
 
@@ -45,6 +48,7 @@ func copyFile(src, dst string, wg *sync.WaitGroup)  {
 	err = dstFile.Sync()
 
 	if err != nil {
+		errChan <- fmt.Errorf("error syncing file %s: %v", dst, err)
 		return 
 	}
 	
@@ -69,6 +73,7 @@ func copyDir(srcDir, dstDir string) error {
 	}
 	
 	var wg sync.WaitGroup
+	errChan := make(chan error, len(files))
 
 	// loop
 	for _, file := range files {
@@ -77,11 +82,17 @@ func copyDir(srcDir, dstDir string) error {
 
 		wg.Add(1)
 		
-		go copyFile(srcFilePath, dstFilePath, &wg)
+		go copyFile(srcFilePath, dstFilePath, &wg, errChan)
 	}
 
 	// Wait for all goroutines to finish
 	wg.Wait()
+	close(errChan) 
+
+	// Print errors if any
+	for err := range errChan {
+		fmt.Println("Error:", err)
+	}
 
 	return nil
 }
