@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+	"bufio"
+	"strings"
 )
 
 
@@ -87,19 +89,29 @@ func copyDir(srcDir, dstDir string) error {
 
 
 func main() {
-	srcPath := "/home/mazhar/books/python/django_course/The Ultimate Django Series Part 1/5.Django ORM (100m)"
-	dstPath := "./backup"
 
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("Enter source directory: ")
+	srcPath, _ := reader.ReadString('\n')
+	srcPath = strings.TrimSpace(srcPath)
+	
+	fmt.Print("Enter destination directory: ")	
+	dstPath, _ := reader.ReadString('\n')
+	dstPath = strings.TrimSpace(dstPath)
+
+	fmt.Println("Source:", srcPath)
+	fmt.Println("Destination:", dstPath)
+	
 	startTime := time.Now()
 	err := copyDir(srcPath, dstPath)
 		
-	
 	if err != nil {
 		fmt.Println("Error copying directory:", err)
 	} else {
 		fmt.Println("Directory copied successfully!")
-	}
-
-	endTime := time.Now()
-	fmt.Println("All files copied in: ", endTime.Sub(startTime))	
+		
+		endTime := time.Now()
+		fmt.Println("All files copied in: ", endTime.Sub(startTime))
+	}		
 }
