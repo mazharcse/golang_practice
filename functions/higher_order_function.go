@@ -8,6 +8,10 @@ func add(a int, b int) int {
 	return a + b
 }
 
+func multipy(a int, b int) int {
+	return a * b
+}
+
 func processOperation(a int, b int, operation func(int, int) int) int {
 	result := operation(a, b)
 
@@ -27,5 +31,8 @@ func main() {
 
 	sum := processOperation(number1,number2, add)
 
+	multiplication := processOperation(number1, number2, multipy)
+
 	fmt.Println("summation: ", sum)
+	fmt.Println("multiplication: ", multiplication)
 }
