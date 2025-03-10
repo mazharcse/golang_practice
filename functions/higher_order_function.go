@@ -18,6 +18,10 @@ func processOperation(a int, b int, operation func(int, int) int) int {
 	return result
 }
 
+func returnFunction() func(int, int) int {
+	return add
+}
+
 func main() {
 	fmt.Println("Higher oder function practice")
 
@@ -35,4 +39,9 @@ func main() {
 
 	fmt.Println("summation: ", sum)
 	fmt.Println("multiplication: ", multiplication)
+
+
+	addition := returnFunction()
+	result := addition(number1,number2)
+	fmt.Println("addition returns add func: ", result)
 }
