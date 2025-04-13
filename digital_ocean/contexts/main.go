@@ -6,11 +6,12 @@ import (
 )
 
 func main() {
-	ctx := context.TODO()
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "mykey", "myvalue")
 	fmt.Println("hello context")
 	doSomething(ctx)
 }
 
 func doSomething(ctx context.Context) {
-	fmt.Println("Do something:", ctx)
+	fmt.Println("Do something:", ctx.Value("mykey"))
 }
