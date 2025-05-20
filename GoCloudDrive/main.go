@@ -13,6 +13,11 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	server :=http.NewServeMux()
+
+	server.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Hello world")
+	})
+ 
 	
 	slog.Info("Starting the server on port 8080 ")
 
