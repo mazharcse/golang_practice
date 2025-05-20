@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"go-cloud-drive/handler"
 	"log"
 	"log/slog"
 	"net/http"
@@ -14,10 +15,11 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	server :=http.NewServeMux()
 
-	server.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
-		slog.Info("Hello world")
-	})
+	// server.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
+	// 	slog.Info("Hello world")
+	// })
  
+	server.HandleFunc("GET /hello", handler.Hello)
 	
 	slog.Info("Starting the server on port 8080 ")
 
