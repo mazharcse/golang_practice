@@ -1,13 +1,17 @@
 package main
 
 import (
-	"errors"		
+	"errors"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
 )
 
-func main() {	
+
+
+func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	server :=http.NewServeMux()
 	
 	slog.Info("Starting the server on port 8080 ")
@@ -19,5 +23,6 @@ func main() {
 	} else if err != nil {
 		slog.Error("Error starting server: %s\n", err.Error())
 		os.Exit(1)
+
 	}
 }
