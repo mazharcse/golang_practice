@@ -25,12 +25,11 @@ func main() {
 	port := os.Getenv("PORT")
 
 	server :=http.NewServeMux()
-
-	// server.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
-	// 	slog.Info("Hello world")
-	// })
  
 	server.HandleFunc("GET /hello", handler.Hello)
+
+	// Upload file
+	server.HandleFunc("POST /file", handler.UploadFile)
 	
 	slog.Info("Starting the server on port " + port + " ...")
 
