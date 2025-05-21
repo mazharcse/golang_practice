@@ -21,6 +21,13 @@ func main() {
 		slog.Error("Error loading .env file" + err.Error())
 		os.Exit(1)
 	}
+
+	err = os.MkdirAll(os.Getenv("ROOT_DIR"), 0755)
+
+	if err != nil {
+		slog.Error("Fail to create root dir " + err.Error())
+		os.Exit(1)
+	}
 	
 	port := os.Getenv("PORT")
 

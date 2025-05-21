@@ -2,8 +2,11 @@ package handler
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -22,6 +25,24 @@ func UploadFile( w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	slog.Info("file name is: " + fileHandler.Filename)
 	slog.Info(fmt.Sprintf("file size is: %d", fileHandler.Size))
+
+	newFilePath := filepath.Join(os.Getenv("ROOT_DIR"), fileHandler.Filename)
+	newFile, err := os.Create(newFilePath)
+
+	if err != nil {
+		slog.Error("Fail to created new file " + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer newFile.Close()
+
+	_, err = io.Copy(newFile, f)
+
+	if err != nil {
+		slog.Error("Fail to save file ", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader((http.StatusOK))
 	return
