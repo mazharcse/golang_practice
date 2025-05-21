@@ -8,11 +8,22 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-)
 
+	"github.com/lpernett/godotenv"
+)
+  
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	
+	err := godotenv.Load()
+	if err != nil {
+		slog.Error("Error loading .env file" + err.Error())
+		os.Exit(1)
+	}
+	
+	port := os.Getenv("PORT")
+
 	server :=http.NewServeMux()
 
 	// server.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
@@ -21,9 +32,9 @@ func main() {
  
 	server.HandleFunc("GET /hello", handler.Hello)
 	
-	slog.Info("Starting the server on port 8080 ")
+	slog.Info("Starting the server on port " + port + " ...")
 
-	err := http.ListenAndServe(":8080", middleware.RequestLogger(server))
+	err = http.ListenAndServe(":"+port, middleware.RequestLogger(server))
 
 	if errors.Is(err, http.ErrServerClosed) {
 		slog.Info("Server closed")
