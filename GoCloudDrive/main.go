@@ -4,6 +4,7 @@ import (
 	"errors"
 	"go-cloud-drive/handler"
 	"go-cloud-drive/middleware"
+	"go-cloud-drive/utils"
 	"log"
 	"log/slog"
 	"net/http"
@@ -22,6 +23,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	db := utils.GetDB()
+
+	if db == nil {
+		slog.Error("Fail to connect database")
+		os.Exit(1)
+	}
+
 	err = os.MkdirAll(os.Getenv("ROOT_DIR"), 0755)
 
 	if err != nil {
@@ -32,7 +40,7 @@ func main() {
 	port := os.Getenv("PORT")
 
 	server :=http.NewServeMux()
- 
+  
 	server.HandleFunc("GET /hello", handler.Hello)
 
 	// Upload file
