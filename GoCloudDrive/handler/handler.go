@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
+	"go-cloud-drive/model"
 	"io"
 	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
+	// "syscall/js"
 )
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +47,22 @@ func UploadFile( w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	newFileMeta := model.FileMeta {
+		Name: fileHandler.Filename,
+		Location: newFilePath,
+		Size: fileHandler.Size,
+		Status: 1,
+	}
+
+	newFileMeta, err = model.InsertFileMeta(newFileMeta)
+	if err != nil {
+		slog.Error("Fail to insert file meta: " + err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")	
 	w.WriteHeader((http.StatusOK))
+	json.NewEncoder(w).Encode(newFileMeta)
 	return
 }
