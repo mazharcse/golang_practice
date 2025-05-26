@@ -15,7 +15,7 @@ const (
  type FileMeta struct {
     Id int64 `json:"id"`
     Name string `json:"name"`
-    Location string `json"location"`
+    Location string `json:"location"`
     UploadedAt string `json:"uploaded_at"`
     Status int64 `json:"status"`
     Size int64 `json:"size"`
