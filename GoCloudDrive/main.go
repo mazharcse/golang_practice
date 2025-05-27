@@ -45,6 +45,9 @@ func main() {
 
 	// Upload file
 	server.HandleFunc("POST /file", handler.UploadFile)
+
+	// Get list of files
+	server.HandleFunc("GET /files", handler.GetFiles)
 	
 	slog.Info("Starting the server on port " + port + " ...")
 
